@@ -23,7 +23,6 @@ for device in inventory["devices"]:
         host=device["host"],
         username=device["username"],
         password=device["password"],
-        secret="cisco",
         use_keys=False,
         allow_agent=False,
         fast_cli=False,
