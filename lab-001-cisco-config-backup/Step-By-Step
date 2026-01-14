@@ -1,0 +1,104 @@
+1. Build the Lab in EVE-NG
+
+Open EVE-NG
+Add 2 Cisco 7206 routers
+Add one L2 switch
+Connect both routers to the L2 switch
+Add one Ubuntu Linux VM
+Add 2 NICs to the Ubuntu VM
+NIC-1 → connect to L2 switch (lab network)
+NIC-2 → connect to EVE-NG management / cloud network
+Start all nodes.
+
+2. Setup Linux VM
+
+Open the Ubuntu VM console
+Follow all steps from the Linux VM Config folder
+Netplan configuration
+Static IP on lab interface
+DHCP on management interface
+Internet connectivity check
+Python, pip, venv setup
+
+Do not proceed until:
+Routers are reachable from Ubuntu
+Internet works on Ubuntu
+
+3. Router Initial Configuration
+
+Open console for each router
+Apply the baseline configuration from the Router Config folder
+Hostname
+Interface IP address
+SSH configuration
+Local user
+Save configuration on each router.
+
+4. Test SSH Access (Mandatory)
+
+From the Ubuntu VM:
+ssh admin@<router-ip>
+Repeat for both routers.
+
+Do not continue unless SSH works successfully.
+
+5. Prepare Python Environment (venv)
+
+On the Ubuntu VM:
+
+cd ~/network-automation/lab-001
+python3 -m venv venv
+source venv/bin/activate
+pip install netmiko pyyaml
+
+Confirm (venv) is visible in the prompt.
+
+6. Create Inventory and Script Files
+Create device inventory file
+
+nano devices.yaml
+
+Paste inventory content from the scripts folder.
+Save and exit.
+
+Create Python script
+
+nano backup_configs.py
+
+Paste the Python script from the scripts folder.
+Save and exit.
+
+7. Run the Python Script
+
+Make sure venv is active:
+
+source venv/bin/activate
+
+Run the script:
+
+python backup_configs.py
+
+8. Verify Output
+
+List files:
+
+ls
+
+Expected output files:
+
+R1_running_config.txt
+R2_running_config.txt
+
+View a file:
+
+nano R1_running_config.txt
+
+If full router configuration is visible, Lab-001 is complete.
+
+End of Lab
+
+This lab confirms:
+SSH automation connectivity
+Legacy Cisco device handling
+Python + Netmiko workflow
+Repeatable configuration backup
