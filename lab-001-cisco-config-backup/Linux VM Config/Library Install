@@ -1,0 +1,42 @@
+sudo apt update
+sudo apt install -y python3 python3-pip python3-venv python3-full
+
+! Check if installed 
+
+python3 --version
+pip3 --version
+python3 -m venv --help
+
+! Create Automation Workspace 
+
+mkdir -p ~/network-automation/lab-001
+cd ~/network-automation/lab-001
+
+! Create Virtual Envinronment
+
+python3 -m venv venv
+
+ls
+! You should see venv/
+
+! Activate venv
+
+source venv/bin/activate
+
+! Prompt should change to below - 
+
+(venv) user@ubuntu:~/network-automation/lab-001$
+
+! Upgrade venv
+
+pip install --upgrade pip
+
+! Test
+
+python -c "import netmiko, yaml; print('Netmiko and PyYAML installed')"
+
+! Expected Output - 
+
+Netmiko and PyYAML installed
+
+
