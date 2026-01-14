@@ -38,3 +38,6 @@ sudo netplan apply
 
 ip a
 ! Check the IP assigned to both NICs - ens3 and ens4
+
+ping 8.8.8.8
+! To test internet connectivity
