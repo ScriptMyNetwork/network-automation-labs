@@ -1,1 +1,17 @@
-!! For older/legacy devices like the 7206 router that I used in this lab there is a SSH Cipher mismatch between 
+!! For older/legacy devices like the 7206 router that I used in this lab there is a SSH Cipher mismatch between the router and the Ubuntu Server VM
+!! To correct this we need to edit the SSH File in the Linux VM
+
+nano ~/.ssh/config
+
+Host 10.0.0.2
+    KexAlgorithms +diffie-hellman-group14-sha1
+    HostKeyAlgorithms +ssh-rsa
+    PubkeyAcceptedAlgorithms +ssh-rsa
+    Ciphers +aes128-cbc,3des-cbc
+    MACs +hmac-sha1
+
+! Ctrl + x
+! Y - to save
+
+! Now try to SSH to device -
+ssh admin@10.0.0.2
