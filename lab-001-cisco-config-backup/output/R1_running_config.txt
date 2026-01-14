@@ -1,0 +1,126 @@
+show running-config
+Building configuration...
+
+Current configuration : 1215 bytes
+!
+! Last configuration change at 16:37:35 UTC Wed Jan 14 2026
+!
+upgrade fpd auto
+version 15.0
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+no aaa new-model
+!
+!
+!
+ip source-route
+ip cef
+!
+!
+!
+!
+ip domain name lab.local
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+username admin privilege 15 secret 5 $1$fmkl$QzszMVwY6Q63HR6VPGFaS1
+!
+redundancy
+!
+!
+ip ssh version 2
+! 
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ no ip address
+ !
+!
+interface FastEthernet0/0
+ no ip address
+ shutdown
+ duplex half
+ !
+!
+interface Ethernet1/0
+ description Management
+ ip address 10.0.0.2 255.255.255.0
+ duplex full
+ !
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+ duplex half
+ !
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+ duplex half
+ !
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+ duplex half
+ !
+!
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+!
+!
+!
+!
+control-plane
+ !
+!
+!
+mgcp fax t38 ecm
+mgcp behavior g729-variants static-pt
+!
+!
+!
+gatekeeper
+ shutdown
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ login local
+ transport input ssh
+!
+end
+
+R1#
