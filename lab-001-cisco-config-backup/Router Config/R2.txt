@@ -12,7 +12,7 @@ int e1/0   ! interface connected to L2 Switch
 
 ip domain-name lab.local
 
-username admin privilege 15 sercret cisco
+username admin privilege 15 sercret <Your Passoword>
 
 crypto key generate rsa modulus 2048
 
