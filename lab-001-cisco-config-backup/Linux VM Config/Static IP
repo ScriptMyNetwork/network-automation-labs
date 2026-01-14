@@ -1,0 +1,37 @@
+!! When adding the VM in EVE NG ensure you have set Ethernet to 2 - this ensures 2 NICs are created
+!! If not, you can stop the node, edit and then change it to 2
+
+ip a 
+! This should show you the available NICs
+! Ideally you will see - 
+! 1: l0
+! 2: ens3
+! 3: ens4
+
+ls /etc/netplan/
+! Get the exact netplan config file name
+! Example - 00-installer-config.yaml
+
+sudo cp /etc/netplan/00-installer-config.yaml /etc/netplan/00-installer-config.yaml.bak
+! Creates a copy in case needed later
+
+sudo nano /etc/netplan/00-installer-config.yaml
+!Below to be configured inside the nano file
+
+network:
+  version: 2
+  ethernets:
+    ens3:
+      dhcp4: no
+      addresses:
+        - 10.0.0.1/24
+
+    ens4:
+      dhcp4: yes
+
+! Press Ctrl + X
+! Y - to save
+! Then you will return to root
+
+ip a
+! Check the IP assigned to both NICs - ens3 and ens4
