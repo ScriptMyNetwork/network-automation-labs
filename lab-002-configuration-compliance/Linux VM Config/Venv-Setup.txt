@@ -1,0 +1,35 @@
+! Create Automation Workspace 
+
+mkdir -p ~/network-automation/lab-002
+cd ~/network-automation/lab-002
+
+! Create Virtual Envinronment
+
+python3 -m venv venv
+
+ls
+! You should see venv/
+
+! Activate venv
+
+source venv/bin/activate
+
+! Prompt should change to below - 
+
+(venv) user@ubuntu:~/network-automation/lab-002$
+
+! Install Netmiko and Pyyaml 
+
+pip install netmiko pyyaml
+
+! Upgrade venv
+
+pip install --upgrade pip
+
+! Test
+
+python -c "import netmiko, yaml; print('Netmiko and PyYAML installed')"
+
+! Expected Output - 
+
+Netmiko and PyYAML installed
