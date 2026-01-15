@@ -14,7 +14,7 @@ Authorized access only
 All activity is monitored and logged
 ^
 
-username admin privilege 15 secret cisco
+username admin privilege 15 secret <YOUR PASSWORD>
 
 line vty 0 4
  login local
