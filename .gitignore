@@ -1,5 +1,21 @@
-venv/
+# Python
 __pycache__/
 *.pyc
-.env
+*.pyo
+*.pyd
+.venv/
+venv/
 *.log
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Automation Outputs (Optional)
+**/output/
+**/reports/
