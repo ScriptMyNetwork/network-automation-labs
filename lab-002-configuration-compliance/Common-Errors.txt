@@ -19,3 +19,5 @@
    It will be easier to navigate and copy using Winscp
    Once copied, login to Linux VM and go to the lab directory, type  - ls
    This will list the files and if you can see the file you need then it is copied
+
+5) If running script multiple times it will create multiple reports, look for the one with the right timestamp to see desired output.
