@@ -1,4 +1,4 @@
-# Lab 002 – Network Health Check Automation Using Python
+# Lab 003 – Network Health Check Automation Using Python
 
 ## Objective
 Automate daily network health checks for Cisco IOS devices using Python.
