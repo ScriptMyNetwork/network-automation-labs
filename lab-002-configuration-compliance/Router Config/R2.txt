@@ -11,7 +11,7 @@ All activity is monitored and logged
 no ntp server 10.0.0.1
 no logging 10.0.0.1
 
-username admin privilege 15 secret cisco
+username admin privilege 15 secret <YOUR PASSWORD>
 
 line vty 0 4
  login local
