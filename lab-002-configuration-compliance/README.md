@@ -1,127 +1,166 @@
 # Lab 002 – Configuration Compliance Automation Using Python
 
-## Objective
-Automate configuration compliance checks for Cisco IOS devices using Python.
+## Overview
+This lab demonstrates how to automate **configuration compliance checks** on Cisco IOS routers using Python and Netmiko.
 
-By completing this lab, you will be able to:
-- Validate device configurations against a defined standard
-- Detect missing or non-compliant configuration elements
-- Generate clear compliance reports suitable for audits and operations teams
+Instead of manually logging into devices to verify standards, the automation validates each router against a **defined configuration baseline** and generates a structured compliance report.
 
-This lab focuses on **configuration standards, governance, and drift detection**, not device health or monitoring.
-
----
-
-## Why This Lab Exists
-In enterprise and ISP environments, network devices are expected to follow strict configuration standards, such as:
-- Mandatory NTP servers
-- Centralized logging configuration
-- Standardized banners
-- Consistent hostname formats
-
-Over time, manual changes, rushed fixes, or misconfigurations lead to **configuration drift**.
-
-This lab demonstrates how to automatically verify that devices comply with a **baseline configuration standard**, reducing audit risk and operational errors.
-
----
-
-## Real-World Scenario
-This lab simulates a scenario where a network engineer or automation engineer must:
-- Verify device compliance during audits
-- Validate configurations after change windows
-- Ensure all devices meet organizational standards
-
-Instead of manually checking configurations on each device, automation performs these checks **consistently and repeatably**.
+This lab focuses on **governance, audit readiness, and configuration drift detection**, not configuration deployment.
 
 ---
 
 ## Lab Topology
-The lab is built using EVE-NG and consists of:
+The lab is built in EVE-NG and consists of:
 
-- **Ubuntu Server** – Automation host
-- **Cisco IOS Routers** – R1, R2, R3
-- **Management Network** – Shared management connectivity
+- Ubuntu Linux VM (Automation Host)
+- Cisco IOS Routers: R1, R2, R3
+- One L2 switch providing a shared management network
 
-The Ubuntu server connects to each router over SSH to retrieve and validate configurations.
+The Ubuntu VM connects to all routers over SSH to retrieve and validate running configurations.
 
----
-
-## Compliance Checks Performed
-The automation validates device configurations against predefined standards, including:
-
-- Hostname format validation
-- NTP server configuration presence
-- Logging configuration presence
-- Banner MOTD compliance against a standard template
-
-Each check is evaluated independently to identify **missing or non-compliant settings**.
+(Topology diagram included in the repository.)
 
 ---
 
-## Automation Workflow
-1. Load device inventory
-2. Load standard configuration template
-3. Establish SSH connection using Netmiko
+## Scope
+
+### In Scope
+- Read-only validation of running configuration
+- Configuration compliance checks against defined standards
+- PASS / FAIL compliance reporting
+- Detection of missing or non-compliant configuration elements
+
+### Out of Scope
+- Configuration remediation (auto-fix)
+- Configuration deployment
+- Multi-vendor support
+- Monitoring, alerting, or dashboards
+
+These are intentionally excluded to keep the lab focused on **compliance detection and governance**.
+
+---
+
+## Configuration Standards Enforced
+The automation validates the following standards:
+
+- Hostname must start with `R`
+- NTP server must be configured as `10.0.0.1`
+- Logging server must be configured as `10.0.0.1`
+- Banner MOTD must match the approved text
+- Device must be reachable via SSH and enter enable mode
+
+Each standard is evaluated independently.
+
+---
+
+## Device Configuration States
+
+Routers are intentionally configured with different compliance states to validate detection logic.
+
+### R1 – Fully Compliant
+- Correct hostname
+- Correct NTP configuration
+- Correct logging configuration
+- Correct banner
+
+Expected result: **PASS**
+
+---
+
+### R2 – Partially Non-Compliant
+- Correct hostname
+- Missing NTP configuration
+- Missing logging configuration
+- Correct banner
+
+Expected result: **FAIL**
+
+---
+
+### R3 – Non-Compliant
+- Correct hostname
+- Incorrect NTP server
+- Missing logging configuration
+- Incorrect banner
+
+Expected result: **FAIL**
+
+---
+
+## Inventory vs Device Hostname
+
+The device name defined in `devices.yaml` represents the **expected identity** of the device, not necessarily the configured hostname.
+
+The automation retrieves the **actual hostname** from the running configuration and validates it against the defined standard. This allows detection of hostname drift without relying solely on inventory labels.
+
+This mirrors real-world automation systems where inventory and device state are treated separately.
+
+---
+
+## Compliance Workflow
+
+1. Load device inventory from `devices.yaml`
+2. Connect to each router via SSH using Netmiko
+3. Enter enable mode
 4. Retrieve running configuration
-5. Compare device configuration against the standard
-6. Identify missing or non-compliant configuration items
-7. Assign compliance status per device
-8. Generate a structured compliance report
+5. Extract actual hostname from configuration
+6. Validate configuration against defined standards
+7. Record compliance issues per device
+8. Generate a timestamped JSON compliance report
+
+---
+
+## Script Execution
+The compliance automation is executed from the Ubuntu Linux VM using a Python virtual environment.
+
+- Script: `config_compliance.py`
+- Inventory: `devices.yaml`
+- Output: JSON compliance report
+
+The script processes devices sequentially and handles SSH or enable-mode failures gracefully.
 
 ---
 
 ## Output and Reporting
-The script generates compliance reports that include:
+The script generates a structured JSON report containing:
+
 - Execution timestamp
-- Per-device compliance status (PASS / FAIL)
-- List of missing configuration elements
-- List of non-compliant configuration elements
+- Device name and management IP
+- Actual hostname detected
+- Compliance status (PASS / FAIL)
+- List of compliance issues per device
 
-Reports are stored in the `reports/` directory for audit and review purposes.
+This output format is suitable for audits, reviews, and future integration with reporting tools.
 
----
-
-## Prerequisites
-
-### Skills
-- Cisco IOS CLI fundamentals
-- Basic Python scripting
-- Understanding of standard network configurations
-- Linux command-line usage
-
-### Environment
-- EVE-NG (Community or Pro)
-- Cisco IOS router images
-- Ubuntu Server VM inside EVE-NG
-
-### Software
-- Python 3
-- Netmiko
-- PyYAML
+(Sample output included in the repository.)
 
 ---
 
-## Production Considerations
-This lab mirrors real-world configuration governance concerns such as:
-- Configuration drift detection
-- Audit readiness
-- Repeatable compliance validation
-- Separation of standards and device-specific configuration
+## Known Limitations
+- Banner validation uses simple string matching and does not handle formatting variations
+- Compliance checks rely on CLI output parsing
+- Devices are processed sequentially
+- No historical compliance tracking is stored
 
-Future enhancements may include role-based standards, multi-vendor support, and integration with CI/CD pipelines.
-
----
-
-## What Can Be Improved Next
-- Support multiple configuration templates
-- Add configuration remediation (auto-fix)
-- Integrate with version control for standards
-- Generate HTML or dashboard-based reports
-- Extend compliance checks to security configurations
+These limitations are acceptable for learning purposes and can be addressed in future enhancements.
 
 ---
 
-## Outcome
-After completing this lab, you will have built a **configuration compliance automation workflow** that reflects real-world enterprise practices.
+## Why This Lab Matters
+Configuration drift is a common cause of outages and audit failures in enterprise networks.
 
-This lab builds on Lab-001 and moves beyond backups into **standards enforcement and configuration governance**.
+This lab demonstrates how automation can be used to:
+- Consistently validate configuration standards
+- Reduce manual verification effort
+- Detect drift after changes or incidents
+- Improve audit and governance readiness
+
+The same approach can be extended to security baselines, remediation workflows, and CI/CD-style validation.
+
+---
+
+## Lab Status
+**Completed**
+
+This lab builds on Lab-001 (Configuration Backup) and provides a foundation for:
+- Lab-003: Network Health Checks and Monitoring Automation
