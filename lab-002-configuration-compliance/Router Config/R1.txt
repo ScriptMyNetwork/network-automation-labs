@@ -1,0 +1,27 @@
+enable
+configure terminal
+
+hostname R1
+
+clock timezone UTC 0
+ntp server 10.0.0.1
+
+logging 10.0.0.1
+logging trap informational
+
+banner motd ^
+Authorized access only
+All activity is monitored and logged
+^
+
+username admin privilege 15 secret cisco
+
+line vty 0 4
+ login local
+ transport input ssh
+exit
+
+ip ssh version 2
+
+end
+write memory
