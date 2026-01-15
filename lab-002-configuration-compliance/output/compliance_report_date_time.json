@@ -1,0 +1,30 @@
+{
+    "timestamp": "2026-01-15T13:13:14.564321",
+    "compliance_results": [
+        {
+            "device": "R1",
+            "ip": "10.0.0.2",
+            "status": "PASS",
+            "issues": []
+        },
+        {
+            "device": "R2",
+            "ip": "10.0.0.3",
+            "status": "FAIL",
+            "issues": [
+                "NTP server configuration missing or incorrect",
+                "Logging server configuration missing"
+            ]
+        },
+        {
+            "device": "R3",
+            "ip": "10.0.0.4",
+            "status": "FAIL",
+            "issues": [
+                "NTP server configuration missing or incorrect",
+                "Logging server configuration missing",
+                "Banner MOTD does not match standard"
+            ]
+        }
+    ]
+}
