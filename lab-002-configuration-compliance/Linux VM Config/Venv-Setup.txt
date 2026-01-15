@@ -1,3 +1,5 @@
+!! NOTE - If you plan on using same directory as LAB001 then you do not need to do these steps, you can directly proceed with creating yaml file and running the python script
+
 ! Create Automation Workspace 
 
 mkdir -p ~/network-automation/lab-002
