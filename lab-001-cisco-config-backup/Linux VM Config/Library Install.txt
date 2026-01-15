@@ -27,6 +27,10 @@ source venv/bin/activate
 
 (venv) user@ubuntu:~/network-automation/lab-001$
 
+! Install Netmiko and Pyyaml 
+
+pip install netmiko pyyaml
+
 ! Upgrade venv
 
 pip install --upgrade pip
