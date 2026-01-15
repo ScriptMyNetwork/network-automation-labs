@@ -2,19 +2,19 @@
   device_type: cisco_ios
   host: 10.0.0.2
   username: admin
-  password: cisco
-  secret: cisco
+  password: <YOUR PASSWORD>
+  secret: <YOUR PASSWORD>
 
 - name: R2
   device_type: cisco_ios
   host: 10.0.0.3
   username: admin
-  password: cisco
-  secret: cisco
+  password: <YOUR PASSWORD>
+  secret: <YOUR PASSWORD>
 
 - name: R3
   device_type: cisco_ios
   host: 10.0.0.4
   username: admin
-  password: cisco
-  secret: cisco
+  password: <YOUR PASSWORD>
+  secret: <YOUR PASSWORD>
