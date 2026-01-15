@@ -1,0 +1,173 @@
+Lab-002 – Configuration Compliance Automation Using Python
+
+1. Build the Lab in EVE-NG
+
+Open EVE-NG  
+Add 3 Cisco 7206 routers (R1, R2, R3)  
+Add one L2 switch  
+Connect all routers to the L2 switch  
+Add one Ubuntu Linux VM  
+Add 2 NICs to the Ubuntu VM  
+
+NIC-1 → Connect to L2 switch (lab network)  
+NIC-2 → Connect to EVE-NG management / cloud network  
+
+Start all nodes.
+
+--------------------------------------------------
+
+2. Setup Linux VM
+
+Open the Ubuntu VM console  
+
+Follow all steps from the Linux VM Config folder:
+
+- Netplan configuration
+- Static IP on lab interface (10.0.0.1/24)
+- DHCP on management interface
+- Internet connectivity check
+- Python, pip, and venv setup
+
+Do not proceed until:
+- Routers are reachable from Ubuntu
+- Internet access works on Ubuntu
+
+--------------------------------------------------
+
+3. Router Initial Configuration
+
+Open console for each router (R1, R2, R3)
+
+Apply baseline configuration from the Router Config folder:
+
+- Hostname
+- Management interface IP address
+- SSH configuration
+- Local user (admin)
+- Enable secret
+
+Save configuration on each router.
+
+--------------------------------------------------
+
+4. Prepare Compliance Scenarios
+
+Routers must be intentionally configured differently:
+
+R1:
+- Fully compliant configuration
+
+R2:
+- Missing NTP configuration
+- Missing logging configuration
+
+R3:
+- Incorrect NTP server
+- Incorrect banner
+- Missing logging configuration
+
+These differences are required to validate compliance detection.
+
+--------------------------------------------------
+
+5. Test SSH Access (Mandatory)
+
+From the Ubuntu VM:
+
+ssh admin@10.0.0.2  
+ssh admin@10.0.0.3  
+ssh admin@10.0.0.4  
+
+Enter enable mode using the enable secret.
+
+Do not continue unless:
+- SSH works for all routers
+- Enable mode access is successful
+
+--------------------------------------------------
+
+6. Prepare Python Environment (venv)
+
+On the Ubuntu VM:
+
+cd ~/network-automation/lab-002  
+python3 -m venv venv  
+source venv/bin/activate  
+pip install netmiko pyyaml  
+
+Confirm the prompt shows:
+
+(venv)
+
+--------------------------------------------------
+
+7. Create Inventory and Script Files
+
+Create device inventory file:
+
+nano devices.yaml  
+
+Paste inventory content from the scripts folder.  
+Save and exit.
+
+Create Python script:
+
+nano config_compliance.py  
+
+Paste the Python script from the scripts folder.  
+Save and exit.
+
+Ensure both files are in the same directory.
+
+--------------------------------------------------
+
+8. Run the Compliance Script
+
+Ensure virtual environment is active:
+
+source venv/bin/activate  
+
+Run the script:
+
+python config_compliance.py  
+
+--------------------------------------------------
+
+9. Verify Output
+
+List files:
+
+ls  
+
+Expected output:
+
+compliance_report_<timestamp>.json  
+
+View the report:
+
+nano compliance_report_<timestamp>.json  
+
+Verify:
+- R1 shows PASS
+- R2 shows FAIL with missing NTP and logging
+- R3 shows FAIL with incorrect NTP, banner, and logging
+
+--------------------------------------------------
+
+10. Lab Completion
+
+Lab-002 is complete when:
+
+- Script runs without SSH or authentication errors
+- Compliance report is generated successfully
+- Non-compliant configurations are correctly identified
+
+--------------------------------------------------
+
+End of Lab
+
+This lab validates:
+- Inventory-driven automation
+- SSH and enable-mode handling with Netmiko
+- Configuration compliance and drift detection
+- Structured reporting for audit and operations use cases
