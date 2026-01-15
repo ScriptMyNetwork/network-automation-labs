@@ -9,7 +9,7 @@
 
 3) Netmiko/PYyaml Install issues
 
-   Create a venv as mentioned in the Library Install section and this will help to resolve this
+   Create a venv as mentioned in the Library Install.txt file which is under the Linux VM Config section and this will help to resolve this
 
 4) Unable to copy script to EVE NG
 
