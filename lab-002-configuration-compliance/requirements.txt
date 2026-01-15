@@ -1,0 +1,11 @@
+EVE NG
+
+Cisco Router Image - This lab uses router 7206V
+
+Linux VM - This lab uses Ubuntu Server 24.04.01
+
+To be installed in VM -
+python3
+pip3
+netmiko
+pyyaml
