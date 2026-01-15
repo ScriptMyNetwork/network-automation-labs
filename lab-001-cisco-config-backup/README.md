@@ -42,10 +42,6 @@ The Ubuntu server acts as the automation controller and initiates SSH connection
 - Ubuntu Server VM inside EVE-NG
 
 ### Software
-- Python 3.8+
+- Python 3
 - Netmiko
 - PyYAML
-
-Install required libraries on Ubuntu:
-```bash
-pip3 install netmiko pyyaml
