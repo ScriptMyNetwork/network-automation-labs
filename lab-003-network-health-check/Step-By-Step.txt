@@ -1,0 +1,198 @@
+Lab-003 – Network Health Check Automation Using Python
+
+--------------------------------------------------
+
+1. Build the Lab in EVE-NG
+
+Open EVE-NG  
+Add 3 Cisco 7206 routers (R1, R2, R3)  
+Add one L2 switch  
+Connect all routers to the L2 switch (management network)  
+Interconnect routers as follows:
+
+- R1 ↔ R2 (point-to-point link)
+- R2 ↔ R3 (point-to-point link)
+
+Add one Ubuntu Linux VM  
+Add 2 NICs to the Ubuntu VM  
+
+NIC-1 → Connect to L2 switch (lab network)  
+NIC-2 → Connect to EVE-NG management / cloud network  
+
+Start all nodes.
+
+--------------------------------------------------
+
+2. Setup Linux VM
+
+Open the Ubuntu VM console  
+
+Follow all steps from the Linux VM Config folder:
+
+- Netplan configuration
+- Static IP on lab interface (10.0.0.1/24)
+- DHCP on management interface
+- Internet connectivity check
+- Python, pip, and venv setup
+
+Do not proceed until:
+- Routers are reachable from Ubuntu
+- Internet access works on Ubuntu
+
+--------------------------------------------------
+
+3. Router Initial Configuration
+
+Open console for each router (R1, R2, R3)
+
+Apply baseline configuration from the Router Config folder:
+
+- Hostname
+- Management interface IP address
+- SSH configuration
+- Local user (admin)
+- Enable secret
+
+Save configuration on each router.
+
+--------------------------------------------------
+
+4. Configure Inter-Router Connectivity and Routing
+
+Configure point-to-point links:
+
+- R1 ↔ R2
+- R2 ↔ R3
+
+Assign IP addresses of your choice to these links.
+
+Configure routing so that:
+- R1 can reach R3
+- R3 can reach R1
+
+Routing options (choose any):
+- Static routes
+- RIP
+- OSPF
+
+Ensure routing tables are populated on all routers.
+
+This step is mandatory for routing health validation.
+
+--------------------------------------------------
+
+5. Test SSH and Network Reachability (Mandatory)
+
+From the Ubuntu VM:
+
+ssh admin@10.0.0.2  
+ssh admin@10.0.0.3  
+ssh admin@10.0.0.4  
+
+Enter enable mode using the enable secret.
+
+Verify:
+- SSH works for all routers
+- Enable mode access is successful
+- Routers can ping each other across R1–R2–R3
+
+Do not continue unless all checks pass.
+
+--------------------------------------------------
+
+6. Prepare Python Environment (venv)
+
+On the Ubuntu VM:
+
+cd ~/network-automation/lab-003  
+python3 -m venv venv  
+source venv/bin/activate  
+pip install netmiko pyyaml  
+
+Confirm the prompt shows:
+
+(venv)
+
+--------------------------------------------------
+
+7. Create Inventory and Script Files
+
+Create device inventory file:
+
+nano devices.yaml  
+
+Paste inventory content from the scripts folder.  
+Save and exit.
+
+Create Python script:
+
+nano network_health_check.py  
+
+Paste the Python script from the scripts folder.  
+Save and exit.
+
+Ensure both files are in the same directory.
+
+--------------------------------------------------
+
+8. Run the Network Health Check Script
+
+Ensure virtual environment is active:
+
+source venv/bin/activate  
+
+Run the script:
+
+python network_health_check.py  
+
+--------------------------------------------------
+
+9. Verify Output
+
+Observe console output for each router:
+
+- CPU status
+- Memory status
+- Uptime status
+- Routing status
+
+List generated files:
+
+ls  
+
+Expected output:
+
+health_report.json  
+
+View the report:
+
+nano health_report.json  
+
+Verify:
+- Devices show PASS / WARNING / CRITICAL correctly
+- CPU and memory values are present
+- Uptime reflects router reload history
+- Routing check shows non-zero routes
+
+--------------------------------------------------
+
+10. Lab Completion
+
+Lab-003 is complete when:
+
+- Script connects to all routers successfully
+- Health checks execute without errors
+- Routing health check passes due to configured routes
+- health_report.json is generated correctly
+- Results accurately reflect device health
+
+--------------------------------------------------
+
+End of Lab
+
+This lab validates:
+- Multi-device operational health automation
+- SSH-based data collection with Netmiko
+- Threshold-based health evaluation
+- Routing table validation
+- Structured reporting for monitoring and operations
