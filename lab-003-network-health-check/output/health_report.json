@@ -1,0 +1,68 @@
+[
+  {
+    "device": "R1",
+    "host": "10.0.0.2",
+    "checks": {
+      "cpu": {
+        "status": "PASS",
+        "value": 1
+      },
+      "memory": {
+        "status": "PASS",
+        "used_percent": 26
+      },
+      "uptime": {
+        "status": "CRITICAL",
+        "uptime": "9 minutes"
+      },
+      "routing": {
+        "status": "PASS",
+        "routes": 2
+      }
+    }
+  },
+  {
+    "device": "R2",
+    "host": "10.0.0.3",
+    "checks": {
+      "cpu": {
+        "status": "PASS",
+        "value": 0
+      },
+      "memory": {
+        "status": "PASS",
+        "used_percent": 26
+      },
+      "uptime": {
+        "status": "CRITICAL",
+        "uptime": "9 minutes"
+      },
+      "routing": {
+        "status": "PASS",
+        "routes": 2
+      }
+    }
+  },
+  {
+    "device": "R3",
+    "host": "10.0.0.4",
+    "checks": {
+      "cpu": {
+        "status": "PASS",
+        "value": 0
+      },
+      "memory": {
+        "status": "PASS",
+        "used_percent": 26
+      },
+      "uptime": {
+        "status": "CRITICAL",
+        "uptime": "9 minutes"
+      },
+      "routing": {
+        "status": "PASS",
+        "routes": 2
+      }
+    }
+  }
+]
