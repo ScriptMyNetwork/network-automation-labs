@@ -1,8 +1,8 @@
-# network_health_check.py – Network Health Check Automation Script
+# health_check.py – Network Health Check Automation Script
 
 ## Purpose
 
-`network_health_check.py` is a Python-based network health monitoring script designed to proactively assess the operational status of Cisco IOS devices.
+`health_check.py` is a Python-based network health monitoring script designed to proactively assess the operational status of Cisco IOS devices.
 
 The script connects to routers using SSH, executes standard operational commands, evaluates key health indicators (CPU, memory, uptime, and routing), and generates both console output and a structured JSON report.
 
