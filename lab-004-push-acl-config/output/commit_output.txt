@@ -1,0 +1,25 @@
+(venv) root@ubuntu:~/network-automation/lab-004# python commit_config.py
+
+Committing configuration on R1
+write mem
+Building configuration...
+[OK]
+R1#
+PASS: Configuration saved
+
+Committing configuration on R2
+write mem
+Building configuration...
+[OK]
+R2#
+PASS: Configuration saved
+
+Committing configuration on R3
+write mem
+Building configuration...
+[OK]
+R3#
+PASS: Configuration saved
+
+===== COMMIT RESULT =====
+Write memory SUCCESSFUL on all routers
