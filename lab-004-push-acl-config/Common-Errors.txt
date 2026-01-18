@@ -1,0 +1,23 @@
+1) SSH Cipher Error between Ubuntu VM and Legacy Cisco IOS versions
+
+   Follow SSH-Cipher-Error.txt in Linux VM Config to resolve this
+
+2) Internet Reachability 
+
+   Ensure you have a 2nd NIC with DHCP enabled and connect to Management Cloud or Bridge Depending on how you have setup your VM.
+   If no 2nd NIC feasibility, then connect internet to L2/L3 Switch and change config accordingly
+
+3) Netmiko/PYyaml Install issues
+
+   Create a venv as mentioned in the Library Install.txt file which is under the Linux VM Config section and this will help to resolve this
+
+4) Unable to copy script to EVE NG
+
+   Create the .py and .yaml file locally on your desktop   
+   Use WinSCP and connect to your Linux VM - DHCP IP, use the same credentials you use to login to the VM
+   Trasnfer the files to the lab directory that you created i.e. /network-automation/lab-001
+   It will be easier to navigate and copy using Winscp
+   Once copied, login to Linux VM and go to the lab directory, type  - ls
+   This will list the files and if you can see the file you need then it is copied
+
+5) Use new devices.yaml file and ensure that the acl_policy.yaml file exists
