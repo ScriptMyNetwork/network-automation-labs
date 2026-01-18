@@ -1,0 +1,13 @@
+(venv) root@ubuntu:~/network-automation/lab-004# python validate_config.py
+
+Validating R1
+PASS
+
+Validating R2
+PASS
+
+Validating R3
+PASS
+
+===== VALIDATION RESULT =====
+Validation PASSED on all routers
