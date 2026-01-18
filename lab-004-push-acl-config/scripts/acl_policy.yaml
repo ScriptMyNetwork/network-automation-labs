@@ -1,0 +1,7 @@
+acl_name: SSH_MANAGEMENT_ONLY
+interface: Ethernet1/0
+direction: in
+
+rules:
+  - permit tcp host 10.0.0.1 any eq 22
+  - deny ip any any
