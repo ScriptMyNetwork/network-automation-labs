@@ -1,0 +1,227 @@
+# Lab-004 – Push ACL Configuration Automation Using Python
+
+--------------------------------------------------
+
+## 1. Build the Lab in EVE-NG
+
+Open EVE-NG  
+
+Add the following nodes:
+- 3 Cisco 7206 routers (R1, R2, R3)
+- 1 L2 switch
+- 1 Ubuntu Linux VM
+
+Connect devices as follows:
+
+- Connect all routers to the L2 switch (management network)
+- (Optional) Interconnect routers if already done in previous labs
+- Add 2 NICs to the Ubuntu VM  
+
+Ubuntu NIC mapping:
+- NIC-1 → L2 switch (lab / management network)
+- NIC-2 → EVE-NG management / cloud network
+
+Start all nodes.
+
+--------------------------------------------------
+
+## 2. Setup Linux VM
+
+Open the Ubuntu VM console.
+
+Configure the Linux VM as follows (reuse steps from earlier labs):
+
+- Netplan configuration
+- Static IP on lab interface: **10.0.0.1/24**
+- DHCP on management interface
+- Verify internet connectivity
+- Install Python, pip, and create a virtual environment
+
+Do not proceed until:
+- All routers are reachable from the Ubuntu VM
+- SSH works from Ubuntu to routers
+- Internet access works on Ubuntu
+
+--------------------------------------------------
+
+## 3. Router Initial Configuration
+
+Open the console for each router (R1, R2, R3).
+
+Apply baseline configuration:
+- Hostname (R1, R2, R3)
+- Management interface IP address (10.0.0.0/24)
+- Enable SSH
+- Create local user: **admin**
+- Password: **cisco**
+- Configure enable secret
+
+Save configuration on each router.
+
+--------------------------------------------------
+
+## 4. Verify SSH Access (Mandatory)
+
+From the Ubuntu VM, verify SSH access:
+
+ssh admin@10.0.0.2  
+ssh admin@10.0.0.3  
+ssh admin@10.0.0.4  
+
+Enter enable mode successfully on each router.
+
+Do not continue unless:
+- SSH access works to all routers
+- Credentials are correct
+- No authentication or timeout issues exist
+
+--------------------------------------------------
+
+## 5. Prepare Python Environment (venv)
+
+On the Ubuntu VM:
+
+cd ~/network-automation/lab-004  
+python3 -m venv venv  
+source venv/bin/activate  
+pip install netmiko pyyaml  
+
+Confirm the shell prompt shows:
+
+(venv)
+
+--------------------------------------------------
+
+## 6. Create Inventory and Policy Files
+
+Create device inventory file:
+
+nano devices.yaml  
+
+Paste the inventory defining:
+- Router name
+- Management IP
+- Username
+- Password
+- Device type
+
+Save and exit.
+
+Create ACL policy file:
+
+nano acl_policy.yaml  
+
+Define:
+- ACL name
+- Interface (Ethernet1/0)
+- Direction (in)
+- ACL rules
+
+Save and exit.
+
+--------------------------------------------------
+
+## 7. Create ACL Configuration Script
+
+Create the ACL push script:
+
+nano acl_config.py  
+
+Paste the ACL configuration automation script.
+
+**Note:**  
+`acl_config.py` is the script responsible for **pushing the ACL configuration** to all routers.  
+It applies the ACL to running-config only and does **not** write memory.
+
+Save and exit.
+
+--------------------------------------------------
+
+## 8. Push ACL Configuration
+
+Ensure the virtual environment is active:
+
+source venv/bin/activate  
+
+Run the ACL configuration script:
+
+python acl_config.py  
+
+Observe output for each router:
+- Successful connection
+- ACL creation
+- ACL application to Ethernet1/0
+
+--------------------------------------------------
+
+## 9. Validate ACL Configuration
+
+Create and run the validation script:
+
+python validate_config.py  
+
+The script validates:
+- ACL exists on all routers
+- ACL rules are correct
+- ACL is applied inbound on Ethernet1/0
+
+Expected output:
+
+Validation PASSED on all routers
+
+Do not proceed if validation fails on any device.
+
+--------------------------------------------------
+
+## 10. Test ACL Functionality (IMPORTANT)
+
+From the Ubuntu VM (IP: 10.0.0.1):
+
+- Verify SSH to routers works (this IP is permitted)
+
+Now **change the Ubuntu VM lab interface IP** to any other IP, for example:
+- 10.0.0.50
+
+After changing the IP:
+- Attempt SSH to routers again
+
+Expected behavior:
+- SSH from 10.0.0.1 → ALLOWED
+- SSH from any other IP → DENIED
+
+This confirms the ACL is working as intended.
+
+--------------------------------------------------
+
+## 11. Commit Configuration (Write Memory)
+
+Only after successful validation and testing:
+
+python commit_config.py  
+
+Expected output:
+
+Write memory SUCCESSFUL on all routers
+
+--------------------------------------------------
+
+## 12. Lab Completion
+
+Lab-004 is complete when:
+
+- ACL is pushed successfully to all routers
+- Validation passes on all routers
+- ACL behavior is verified by changing the Linux VM IP
+- Configuration is committed using write memory
+- No routers are locked out
+
+--------------------------------------------------
+
+## End of Lab
+
+This lab validates:
+- Multi-device configuration automation
+- Policy-driven ACL deployment
+- Safe separation of push, validate, and commit
+- Enterprise-style change control
+- Practical security testing using source IP changes
