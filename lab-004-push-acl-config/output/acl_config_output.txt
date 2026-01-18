@@ -1,0 +1,40 @@
+(venv) root@ubuntu:~/network-automation/lab-004# python acl_config.py
+
+Connecting to R1
+configure terminal
+Enter configuration commands, one per line. End with CNTL/Z.
+R1(config)#ip access-list extended SSH_MANAGEMENT_ONLY
+R1(config-ext-nacl)#permit tcp host 10.0.0.1 any eq 22
+R1(config-ext-nacl)#deny ip any any
+R1(config-ext-nacl)#exit
+R1(config)#interface Ethernet1/0
+R1(config-if)#ip access-group SSH_MANAGEMENT_ONLY in
+R1(config-if)#exit
+R1(config)#end
+R1#
+
+Connecting to R2
+configure terminal
+Enter configuration commands, one per line. End with CNTL/Z.
+R2(config)#ip access-list extended SSH_MANAGEMENT_ONLY
+R2(config-ext-nacl)#permit tcp host 10.0.0.1 any eq 22
+R2(config-ext-nacl)#deny ip any any
+R2(config-ext-nacl)#exit
+R2(config)#interface Ethernet1/0
+R2(config-if)#ip access-group SSH_MANAGEMENT_ONLY in
+R2(config-if)#exit
+R2(config)#end
+R2#
+
+Connecting to R3
+configure terminal
+Enter configuration commands, one per line. End with CNTL/Z.
+R3(config)#ip access-list extended SSH_MANAGEMENT_ONLY
+R3(config-ext-nacl)#permit tcp host 10.0.0.1 any eq 22
+R3(config-ext-nacl)#deny ip any any
+R3(config-ext-nacl)#exit
+R3(config)#interface Ethernet1/0
+R3(config-if)#ip access-group SSH_MANAGEMENT_ONLY in
+R3(config-if)#exit
+R3(config)#end
+R3#
