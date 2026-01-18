@@ -35,7 +35,7 @@ Automate the following tasks across all routers:
 
 ### Credentials
 - Username: admin
-- Password: cisco
+- Password: <YOUR PASSWORD>
 
 ### Interface Used
 - Ethernet1/0 (ACL applied inbound)
