@@ -1,0 +1,294 @@
+# LAB005 – Terraform Network Automation with Drift Detection & Auto-Remediation
+
+--------------------------------------------------
+
+## 1. Build the Lab in EVE-NG
+
+Open EVE-NG.
+
+Add the following nodes:
+- 3 Cisco 7206 routers (R1, R2, R3)
+- 1 L2 switch
+- 1 Ubuntu Linux VM
+
+Connect devices as follows:
+
+- Connect all routers to the L2 switch (management network)
+- Add 2 NICs to the Ubuntu VM
+
+Ubuntu NIC mapping:
+- NIC-1 → L2 switch (lab / management network)
+- NIC-2 → EVE-NG management / cloud network
+
+Start all nodes.
+
+--------------------------------------------------
+
+## 2. Setup Linux VM (Base Configuration)
+
+Open the Ubuntu VM console.
+
+Perform Linux base setup using existing documentation:
+
+- Netplan configuration
+- Static IP on lab interface: **10.0.0.1/24**
+- DHCP on management interface
+- Verify internet connectivity
+
+Follow instructions from:
+- Linux VM configuration folder
+- Terraform-Setup.txt (Terraform installation steps)
+- venv setup instructions in the same folder
+
+Do not proceed until:
+- Internet access works on the Ubuntu VM
+- Routers are reachable from Ubuntu
+- SSH connectivity works to all routers
+
+--------------------------------------------------
+
+## 3. Router Initial Configuration
+
+Router baseline configuration is already documented.
+
+Refer to:
+- router-config/README.md
+
+Ensure the following is completed on each router:
+- Hostname (R1, R2, R3)
+- Management IP in 10.0.0.0/24
+- SSH enabled
+- Local user created along with password
+- Ensure No IP add set on loopback
+- Configuration saved
+
+--------------------------------------------------
+
+## 4. Verify SSH Access (Mandatory)
+
+From the Ubuntu VM, verify SSH access:
+
+ssh admin@10.0.0.2
+ssh admin@10.0.0.3
+ssh admin@10.0.0.4
+
+
+Enter enable mode successfully on each router.
+
+Do not continue unless:
+- SSH access works to all routers
+- No authentication errors exist
+- No timeout or crypto issues occur
+
+--------------------------------------------------
+
+## 5. Create LAB005 Working Directory
+
+On the Ubuntu VM:
+
+mkdir -p ~/network-automation/lab-005
+cd ~/network-automation/lab-005
+
+
+Create required subdirectories:
+
+mkdir scripts inventory
+
+
+--------------------------------------------------
+
+## 6. Copy LAB005 Files to Linux VM (WinSCP)
+
+From your local system, use **WinSCP** to copy files to the Ubuntu VM.
+
+Copy the following into:
+
+~/network-automation/lab-005
+
+
+Terraform files:
+- main.tf
+- variables.tf
+- terraform.tfvars
+- providers.tf
+
+Scripts directory:
+- scripts/check_drift.py
+- scripts/push_loopback.py
+
+Inventory directory:
+- inventory/devices.yaml
+
+--------------------------------------------------
+
+## 7. Verify Folder Structure (IMPORTANT)
+
+The directory structure **must exactly match** the following:
+
+~/network-automation/lab-005/
+├── main.tf
+├── variables.tf
+├── terraform.tfvars
+├── providers.tf
+├── scripts/
+│ ├── check_drift.py
+│ └── push_loopback.py
+└── inventory/
+└── devices.yaml
+
+
+This same structure is also followed in the **script_tf** folder for consistency across labs.
+
+--------------------------------------------------
+
+## 8. Set Script Permissions (Mandatory)
+
+From the lab root directory:
+
+cd ~/network-automation/lab-005
+chmod +x scripts/*.py
+
+
+Verify permissions:
+
+ls -l scripts/
+
+
+Both Python scripts must show executable permissions.
+
+--------------------------------------------------
+
+## 9. Edit Inventory File (Mandatory)
+
+Open the inventory file:
+
+nano inventory/devices.yaml
+
+
+Perform the following checks:
+- Verify router management IP addresses
+- Verify loopback intent values
+- **Edit the password field to match your router configuration**
+
+Save and exit.
+
+--------------------------------------------------
+
+## 10. Prepare Python Virtual Environment
+
+Activate the Python virtual environment created earlier:
+
+source venv/bin/activate
+
+
+Ensure required packages are installed:
+- netmiko
+- pyyaml
+
+Confirm the shell prompt shows:
+
+(venv)
+
+
+--------------------------------------------------
+
+## 11. Initialize Terraform
+
+From the lab root directory:
+
+cd ~/network-automation/lab-005
+terraform init
+
+
+Terraform should:
+- Initialize backend
+- Load providers
+- Prepare local state
+
+Do not continue if initialization fails.
+
+--------------------------------------------------
+
+## 12. Run Terraform Apply (Drift Detection + Auto-Remediation)
+
+Execute:
+
+terraform apply
+
+
+Type **yes** when prompted.
+
+Expected behavior:
+- Drift detection runs first
+- Drift is reported if loopback is missing or modified
+- Auto-remediation restores loopback configuration
+- Terraform completes successfully
+
+--------------------------------------------------
+
+## 13. Verify Loopback Configuration
+
+On each router, verify configuration:
+
+show ip interface brief | include Loopback
+
+
+Confirm:
+- Loopback0 exists
+- Correct IP address is configured
+- Interface is up/up
+
+--------------------------------------------------
+
+## 14. Test Drift Detection (IMPORTANT)
+
+Manually introduce drift on any router:
+- Remove loopback IP
+- Shut down Loopback0
+- Modify loopback address
+
+Then re-run:
+
+terraform apply
+
+
+Expected behavior:
+- Drift is detected
+- Loopback configuration is automatically restored
+- Network converges back to desired state
+
+--------------------------------------------------
+
+## 15. Lab Completion Criteria
+
+LAB005 is complete when:
+
+- Terraform initializes successfully
+- Drift detection runs without errors
+- Auto-remediation restores loopback configuration
+- Repeated Terraform applies are idempotent
+- No manual intervention is required to recover from drift
+
+--------------------------------------------------
+
+## Why This Lab Matters
+
+Most network automation labs focus only on pushing configuration.
+
+LAB005 demonstrates enterprise-grade automation principles:
+
+- Desired-state networking
+- Drift detection before enforcement
+- Controlled auto-remediation
+- Idempotent workflows
+- Terraform as a network orchestration layer
+
+This lab forms the foundation for:
+- GitOps-based network changes
+- Risk-aware automation pipelines
+- Self-healing network operations
+- Future AI-assisted change intelligence platforms
+
+--------------------------------------------------
+
+## End of Lab
