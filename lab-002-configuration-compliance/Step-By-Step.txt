@@ -105,9 +105,10 @@ Confirm the prompt shows:
 
 Create device inventory file:
 
-nano devices.yaml  
+nano devices.yaml
 
-Paste inventory content from the scripts folder.  
+Paste inventory content from the scripts folder and Do Not forget to change password to your password which you set.
+
 Save and exit.
 
 Create Python script:
