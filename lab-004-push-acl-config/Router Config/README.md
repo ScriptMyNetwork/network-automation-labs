@@ -14,8 +14,6 @@ int Eth 0/1 ! Interface connected to L2 switch
 
 ip add 10.0.0.x 255.255.255.0 ! x - Depending on router you can choose what to set - ensure same is defined in devices.yaml
 
-!! Assign IP Addressess to the P2P links between routers and configure routing of your choice - Static/OSPF/EIGRP .etc
+end 
 
-! In this example I configured static routes and added loopbacks for each router
-
-end write memory
+write memory
