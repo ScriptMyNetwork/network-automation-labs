@@ -18,7 +18,7 @@ source venv/bin/activate
 
 ! Prompt should change to below - 
 
-(venv) user@ubuntu:~/network-automation/lab-003$
+(venv) user@ubuntu:~/network-automation/lab-004$
 
 ! Install Netmiko and Pyyaml 
 
