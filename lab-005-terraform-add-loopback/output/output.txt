@@ -1,0 +1,43 @@
+Terraform will perform the following actions:
+
+  # null_resource.auto_remediate[0] will be created
+  + resource "null_resource" "auto_remediate" {
+      + id = (known after apply)
+    }
+
+  # null_resource.drift_check is tainted, so must be replaced
+  -/+ resource "null_resource" "drift_check" {
+      ~ id = "5708092691928321669" -> (known after apply)
+    }
+
+Plan: 2 to add, 0 to change, 1 to destroy.
+
+Do you want to perform these actions?
+Terraform will perform the actions described above.
+Only 'yes' will be accepted to approve.
+
+Enter a value: yes  !!!! Type yes here
+
+null_resource.drift_check: Destroying... [id=5708092691928321669]
+null_resource.drift_check: Destruction complete after 0s
+null_resource.drift_check: Creating...
+null_resource.drift_check: Provisioning with 'local-exec'...
+null_resource.drift_check (local-exec): Executing: ["/bin/sh" "-c" "python3 scripts/check_drift.py inventory/devices.yaml"]
+null_resource.drift_check (local-exec): Checking drift on R1
+null_resource.drift_check (local-exec): DRIFT DETECTED on R1
+null_resource.drift_check (local-exec): Checking drift on R2
+null_resource.drift_check (local-exec): DRIFT DETECTED on R2
+null_resource.drift_check (local-exec): Checking drift on R3
+null_resource.drift_check (local-exec): DRIFT DETECTED on R3
+null_resource.drift_check (local-exec): Drift detected.
+null_resource.drift_check: Creation complete after 4s [id=6832392047997052409]
+
+null_resource.auto_remediate[0]: Creating...
+null_resource.auto_remediate[0]: Provisioning with 'local-exec'...
+null_resource.auto_remediate[0] (local-exec): Executing: ["/bin/sh" "-c" "python3 scripts/push_loopback.py inventory/devices.yaml"]
+null_resource.auto_remediate[0] (local-exec): Applying loopback config on R1
+null_resource.auto_remediate[0] (local-exec): Applying loopback config on R2
+null_resource.auto_remediate[0] (local-exec): Applying loopback config on R3
+null_resource.auto_remediate[0]: Creation complete after 6s [id=55173138248335340274]
+
+Apply complete! Resources: 2 added, 0 changed, 1 destroyed.
