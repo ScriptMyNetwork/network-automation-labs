@@ -1,25 +1,57 @@
-en
+## Interface Summary
 
-conf t
+| Interface | Purpose | IP Address |
+|---------|--------|-----------|
+FastEthernet0/0 | Management / Cloud Network | DHCP |
+Ethernet1/0 | Connection to Palo Alto Firewall | 100.64.0.2/24 |
 
+## Router Configuration
+
+enable
+configure terminal
+Set Hostname
 hostname ISP-CE
-
-int fa0/0  #Managent Cloud Connected Interface
- ip add dhcp
+Configure Management / Cloud Interface
+interface FastEthernet0/0
+ ip address dhcp
  description Internet
- no shut
+ no shutdown
  exit
+This interface connects to the EVE-NG management/cloud network and receives its IP address via DHCP.
 
-int e1/0  #Connected to PA firewall
- ip add 100.64.0.2 255.255.255.0
- description To-LAN
- no shut
+Configure Interface Toward Palo Alto Firewall
+interface Ethernet1/0
+ ip address 100.64.0.2 255.255.255.0
+ description To-PaloAlto
+ no shutdown
  exit
+This interface connects to:
 
-ip route 0.0.0.0 0.0.0.0 192.168.204.2   
+Palo Alto outside interface (ethernet1/2)
 
-#default route IP should be default Gateway IP of the EVE NG Linux VM. Find this by running "ip a" on the EVE NG host in VMWare/Virtual Box
+Subnet: 100.64.0.0/24
 
+Configure Default Route
+ip route 0.0.0.0 0.0.0.0 192.168.204.2
+Important:
+The next-hop IP (192.168.204.2) must be the default gateway of the EVE-NG Linux host.
+
+To find this value, run the following command on the EVE-NG host (VMware / VirtualBox):
+
+ip a
+Use the gateway associated with the cloud-facing interface.
+
+Save Configuration
 end
+write memory
 
-write mem
+Validation Checklist
+After configuration, verify:
+
+Router can ping public IPs (e.g., 8.8.8.8)
+
+Palo Alto outside interface can reach 100.64.0.2
+
+Palo Alto can ping the internet using source interface
+
+NAT translations occur correctly on the firewall
