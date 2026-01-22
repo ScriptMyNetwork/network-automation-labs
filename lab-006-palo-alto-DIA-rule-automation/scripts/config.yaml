@@ -1,0 +1,27 @@
+pa:
+  host: "53.150.0.1"
+  username: "admin"
+  password: "<Your Password>" #Enter your password here
+
+vsys: "vsys1"
+
+zones:
+  inside: "inside"
+  outside: "outside"
+
+objects:
+  linux_subnet:
+    name: "linux-subnet"
+    value: "53.150.0.0/24"
+
+  allowed_fqdn:
+    name: "allowed-site-fqdn"
+    fqdn: "github.com"
+
+  service:
+    name: "tcp-443"
+    protocol: "tcp"
+    port: "443"
+
+policy:
+  name: "allow-github-https"
