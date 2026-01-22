@@ -14,3 +14,7 @@ pip3
 netmiko
 pyyaml
 rich
+requests
+venv
+wget
+curl
