@@ -1,1 +1,276 @@
-..
+# LAB006 – Common Errors and Troubleshooting Guide
+
+This document lists **common issues encountered during LAB006**, along with their **root cause** and **precise resolution**.
+
+Each issue clearly identifies whether the fix belongs to:
+- Linux VM
+- Palo Alto Firewall
+- Internet Router (EVE-NG / upstream)
+
+---
+
+## Error 1 – Internet Router Unable to Reach the Internet
+
+### Symptoms
+- Palo Alto cannot ping public IPs
+- Linux host cannot access the internet even with allow rules
+- `ping 8.8.8.8` fails from router or firewall
+- NAT counters do not increment
+
+---
+
+### Root Cause
+The **internet router does not have a valid default route** pointing to the EVE-NG cloud / NAT network.
+
+In EVE-NG, this usually happens when:
+- The router is connected to the wrong cloud type
+- The default gateway is missing or incorrect
+- The EVE host itself has no internet connectivity
+
+---
+
+### Where to Fix
+**Internet Router / EVE-NG Linux Host (VMware)**
+
+---
+
+### Resolution Steps
+
+1. On the internet router, verify routing table:
+show ip route
+
+
+2. Ensure a default route exists:
+0.0.0.0/0 via <EVE-NG gateway>
+
+
+3. On the **EVE-NG Linux host (VMware)**, verify internet connectivity:
+ip a
+ip route
+
+
+4. Ensure the EVE host itself has:
+- A valid default gateway
+- Working DNS
+- Internet access
+
+> **Important:**  
+> If the router cannot reach the internet, **nothing downstream will work**, regardless of firewall or host configuration.
+
+---
+
+## Error 2 – Hostname Not Resolving (DNS Failure)
+
+### Symptoms
+- `nslookup github.com` fails
+- `curl https://github.com` fails
+- Firewall rules appear correct but traffic does not pass
+- FQDN-based security rules do not match
+- Linux error: `parse of /etc/resolv.conf failed`
+
+---
+
+### Root Cause
+DNS traffic is **not permitted** through the Palo Alto firewall, or DNS is misconfigured on the Linux VM.
+
+Common causes:
+- Missing DNS allow security rule
+- DNS rule placed below deny rules
+- DNS allowed only for UDP (TCP 53 missing)
+- Invalid `/etc/resolv.conf` on Linux
+
+---
+
+### Where to Fix
+- **Primary:** Palo Alto Firewall  
+- **Secondary:** Linux VM
+
+---
+
+### Resolution Steps (Firewall)
+
+Ensure a **DNS allow rule** exists:
+
+- From Zone: `inside`
+- To Zone: `outside`
+- Destination: `1.1.1.1`, `8.8.8.8`
+- Service:
+- UDP 53
+- TCP 53
+- Action: `allow`
+- Rule position: **above HTTPS / deny rules**
+
+Commit and verify traffic logs.
+
+---
+
+### Resolution Steps (Linux VM)
+
+1. Fix DNS configuration:
+sudo nano /etc/resolv.conf
+
+
+2. Ensure contents are valid:
+nameserver 1.1.1.1
+nameserver 8.8.8.8
+
+
+3. Verify:
+nslookup github.com
+
+
+> **Note:**  
+> FQDN-based firewall rules will never work unless DNS is functioning correctly.
+
+---
+
+## Error 3 – NAT Configured but Internet Still Not Working
+
+### Symptoms
+- DNS works, but HTTPS does not
+- Firewall logs show traffic allowed
+- NAT hit count is zero or inconsistent
+- Palo Alto can resolve DNS but cannot pass traffic
+
+---
+
+### Root Cause
+Incorrect **Virtual Router or NAT configuration** on the Palo Alto firewall.
+
+Common mistakes:
+- Interfaces not attached to the same virtual router
+- Default route missing or wrong next hop
+- NAT rule missing translated packet configuration
+- Wrong interface selected for source translation
+
+---
+
+### Where to Fix
+**Palo Alto Firewall**
+
+---
+
+### Resolution Steps
+
+#### Virtual Router
+- Ensure both interfaces are attached:
+- `ethernet1/1` (inside)
+- `ethernet1/2` (outside)
+- Default route:
+- Destination: `0.0.0.0/0`
+- Interface: `ethernet1/2`
+- Next Hop: Upstream router IP
+
+---
+
+#### NAT Policy (Critical)
+
+**Original Packet**
+- Source Zone: `inside`
+- Destination Zone: `outside`
+- Destination Interface: `ethernet1/2`
+- Source Address: `53.150.0.0/24`
+- Destination Address: `any`
+- Service: `any`
+
+**Translated Packet**
+- Source Translation:
+- Type: **Dynamic IP and Port**
+- Address Type: **Interface Address**
+- Interface: `ethernet1/2`
+- IP Address: `100.64.0.1/24`
+- Destination Translation: None
+
+Commit and verify NAT hit counters.
+
+---
+
+## Error 4 – Traffic Bypasses Firewall
+
+### Symptoms
+- Internet works even when firewall rules are removed
+- NAT counters do not increment
+- Security logs show no traffic
+
+---
+
+### Root Cause
+Linux VM still has an **active management/cloud interface** with a default route.
+
+---
+
+### Where to Fix
+**Linux VM**
+
+---
+
+### Resolution Steps
+
+Disable the management interface after setup:
+
+sudo ip link set ens4 down
+
+
+Verify:
+ip route
+
+
+Default route must point to:
+53.150.0.1
+
+
+---
+
+## Error 5 – Palo Alto Rule Rejects Zone Name
+
+### Symptoms
+- Error: `from inside is not an allowed keyword`
+- API or automation fails
+- GUI-created rules work, automation does not
+
+---
+
+### Root Cause
+Zone is:
+- Not attached to `vsys1`, or
+- Name does not exactly match (case-sensitive)
+
+---
+
+### Where to Fix
+**Palo Alto Firewall**
+
+---
+
+### Resolution Steps
+
+Verify zones:
+show zone
+
+
+Ensure:
+- `inside` → vsys1
+- `outside` → vsys1
+
+Correct spelling and commit.
+
+---
+
+## Summary
+
+Most failures in this lab are caused by:
+- Missing default routes
+- DNS not explicitly allowed
+- NAT misconfiguration
+- Traffic bypassing the firewall
+- Zone ↔ VSYS mismatches
+
+This troubleshooting guide should be used **before changing automation code**, as the majority of issues are **environmental**, not programmatic.
+
+---
+
+## Final Advice
+
+> Always validate **routing → NAT → DNS → security policy** in that order.
+
+Automation only works reliably on a **correctly plumbed network**.
