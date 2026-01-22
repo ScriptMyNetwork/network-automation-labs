@@ -1,3 +1,18 @@
+# LAB006 – Internet Router Configuration (ISP-CE)
+
+This document describes the **baseline configuration** for the internet-facing router used in LAB006.  
+The router provides upstream connectivity between the Palo Alto firewall and the EVE-NG cloud network.
+
+---
+
+## Device Role
+
+- Acts as **ISP / Internet Edge (CE)**
+- Provides default route toward EVE-NG cloud
+- Connects directly to the Palo Alto firewall outside interface
+
+---
+
 ## Interface Summary
 
 | Interface | Purpose | IP Address |
@@ -5,8 +20,13 @@
 FastEthernet0/0 | Management / Cloud Network | DHCP |
 Ethernet1/0 | Connection to Palo Alto Firewall | 100.64.0.2/24 |
 
+---
+
 ## Router Configuration
 
+### Enter Configuration Mode
+
+```text
 enable
 configure terminal
 Set Hostname
@@ -44,7 +64,6 @@ Use the gateway associated with the cloud-facing interface.
 Save Configuration
 end
 write memory
-
 Validation Checklist
 After configuration, verify:
 
