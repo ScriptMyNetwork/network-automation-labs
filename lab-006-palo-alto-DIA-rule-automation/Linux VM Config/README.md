@@ -1,6 +1,6 @@
-## 1. Network Interfaces
+## Linux VM Setup
 
-### Identify Interfaces
+Identify Interfaces
 
 ip link
 ip addr
