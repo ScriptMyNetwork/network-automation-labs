@@ -3,6 +3,7 @@
 1. Identify Interfaces
 
 ip link
+
 ip addr
 
 Assumptions:
@@ -12,13 +13,17 @@ Inside interface (connected to L2 switch): ens3
 Management / cloud interface: ens4
 
 2. Configure Static IP on Inside Interface
+
 sudo ip addr add 53.150.0.10/24 dev ens3
+
 sudo ip link set ens3 up
+
 Verify:
 
 ip addr show ens3
 
 3. Enable DHCP on Management Interface (Temporary)
+
 sudo dhclient ens4
 
 Verify internet access (temporary):
@@ -28,6 +33,7 @@ ping -c 3 8.8.8.8
 4. Update System and Install Required Packages
 
 sudo apt update
+
 sudo apt install -y \
   python3 \
   python3-pip \
@@ -40,6 +46,7 @@ sudo apt install -y \
 Verify:
 
 python3 --version
+
 pip3 --version
 
 5. Create Lab Directories
