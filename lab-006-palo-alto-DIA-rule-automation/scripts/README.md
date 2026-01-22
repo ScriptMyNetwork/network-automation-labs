@@ -1,0 +1,1 @@
+Python Script + inventory file
