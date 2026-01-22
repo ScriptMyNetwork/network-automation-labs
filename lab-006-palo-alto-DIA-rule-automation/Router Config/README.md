@@ -16,7 +16,9 @@ int e1/0  #Connected to PA firewall
  no shut
  exit
 
-ip route 0.0.0.0 0.0.0.0 192.168.204.2  #This should be default Gateway IP of the EVE NG Linux VM. Find this by running "ip a" on the EVE NG host in VMWare/Virtual Box
+ip route 0.0.0.0 0.0.0.0 192.168.204.2   
+
+#default route IP should be default Gateway IP of the EVE NG Linux VM. Find this by running "ip a" on the EVE NG host in VMWare/Virtual Box
 
 end
 
