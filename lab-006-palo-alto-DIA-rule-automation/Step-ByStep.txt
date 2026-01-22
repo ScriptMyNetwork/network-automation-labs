@@ -1,1 +1,247 @@
+LAB006 – Step-by-Step Execution Guide
+Palo Alto DIA Security Policy Automation
+======================================
 
+This document provides the end-to-end execution flow for LAB006.
+All configurations are split into logical components and stored in separate files.
+
+Follow the steps in order. Do not skip steps.
+
+----------------------------------------------------------------
+
+Repository Structure Reference
+------------------------------
+
+lab-006-palo-alto-DIA-rule-automation/
+|
+|-- Linux VM Config/
+|-- Palo Alto Config/
+|-- Router Config/
+|-- scripts/
+|-- topology/
+|-- output/
+|-- Common-Errors.txt
+|-- README.md
+|-- Step-ByStep.txt
+|-- requirements.txt
+
+----------------------------------------------------------------
+
+Step 1 – Review Lab Overview
+----------------------------
+
+Before starting, review the lab intent and assumptions.
+
+Refer to:
+- README.md
+
+This explains:
+- The problem being solved
+- The security goal (DIA restriction)
+- The expected end state
+
+----------------------------------------------------------------
+
+Step 2 – Configure Internet Router (ISP-CE)
+-------------------------------------------
+
+The internet router must be configured first.
+
+Navigate to:
+- Router Config/
+
+Apply the router configuration file provided in this directory.
+
+This configuration:
+- Sets the router hostname
+- Configures the cloud-facing interface using DHCP
+- Configures the interface toward the Palo Alto firewall
+- Adds a default route pointing to the EVE-NG host gateway
+
+If the router cannot reach the internet, nothing else in the lab will work.
+
+----------------------------------------------------------------
+
+Step 3 – Configure Palo Alto Firewall (Baseline)
+------------------------------------------------
+
+Navigate to:
+- Palo Alto Config/
+
+Apply configurations in the following order:
+
+1. Interface Configuration
+   - ethernet1/1 as inside
+   - ethernet1/2 as outside
+
+2. Zone Configuration
+   - inside
+   - outside
+
+3. Virtual Router Configuration
+   - Attach both interfaces
+   - Add default route toward upstream router
+
+4. NAT Configuration
+   - Source NAT from inside to outside
+   - Dynamic IP and Port
+   - Translated source uses outside interface address
+
+5. DNS Security Policy
+   - Allow DNS to 1.1.1.1 and 8.8.8.8
+   - Allow both TCP and UDP port 53
+   - Rule must be above deny rules
+
+Refer to:
+- Palo Alto Config/palo-alto-config.md
+
+Commit configuration after completing these steps.
+
+----------------------------------------------------------------
+
+Step 4 – Configure Linux VM (Automation Host)
+---------------------------------------------
+
+Navigate to:
+- Linux VM Config/
+
+Follow:
+- linux-vm-config.md
+
+This includes:
+- Static IP configuration on inside-facing interface
+- Temporary DHCP on management/cloud interface
+- Package installation
+- Python virtual environment setup
+- Directory preparation
+
+----------------------------------------------------------------
+
+Step 5 – Copy Automation Files
+------------------------------
+
+After Linux VM setup:
+
+- Copy automation files into:
+  - scripts/
+
+Files include:
+- Python automation script
+- YAML configuration file
+
+Use WinSCP or an equivalent file transfer tool.
+
+----------------------------------------------------------------
+
+Step 6 – Disable Management Interface on Linux VM
+-------------------------------------------------
+
+After files and dependencies are copied:
+
+- Disable the management/cloud interface (ens4)
+
+This ensures:
+- No direct internet bypass
+- All traffic flows through Palo Alto
+
+This step is mandatory.
+
+----------------------------------------------------------------
+
+Step 7 – Set Default Gateway and DNS on Linux VM
+------------------------------------------------
+
+Configure the Linux VM to:
+- Use Palo Alto inside IP (53.150.0.1) as default gateway
+- Use DNS servers:
+  - 1.1.1.1
+  - 8.8.8.8
+
+This is required for:
+- Internet access
+- FQDN resolution
+- FQDN-based security rules
+
+----------------------------------------------------------------
+
+Step 8 – Execute Automation Script
+----------------------------------
+
+From the scripts directory:
+
+- Activate the Python virtual environment
+- Execute the automation script
+
+The script performs:
+- Address object creation
+- Service object creation
+- Security policy creation
+- Commit operation
+
+----------------------------------------------------------------
+
+Step 9 – Remove Temporary Allow Rules
+-------------------------------------
+
+If any temporary allow-any rules were used during setup:
+
+- Remove or disable them
+- Commit the firewall configuration
+
+Only least-privilege rules should remain.
+
+----------------------------------------------------------------
+
+Step 10 – Validation
+--------------------
+
+Validate from Linux VM:
+- Approved site access succeeds
+- Non-approved sites fail
+
+Validate on Palo Alto:
+- Traffic logs show correct rule hits
+- NAT hit counters increment
+- DNS traffic hits DNS allow rule
+
+----------------------------------------------------------------
+
+Step 11 – Troubleshooting
+-------------------------
+
+If issues occur, refer to:
+- Common-Errors.txt
+
+This file maps common failures to:
+- Linux VM configuration issues
+- Palo Alto configuration issues
+- Router routing issues
+
+Always troubleshoot in this order:
+Routing -> NAT -> DNS -> Security Policy
+
+----------------------------------------------------------------
+
+Final Outcome
+-------------
+
+At completion:
+- Linux VM has no direct internet access
+- All outbound traffic flows through Palo Alto
+- DNS is explicitly permitted
+- Only approved destinations are reachable
+- Security policy is enforced via automation
+
+----------------------------------------------------------------
+
+Summary
+-------
+
+This guide ties together:
+- Router configuration
+- Firewall baseline setup
+- Linux VM preparation
+- Automation execution
+- Validation and troubleshooting
+
+The lab is repeatable, auditable, and production-realistic.
