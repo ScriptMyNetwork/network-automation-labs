@@ -1,6 +1,6 @@
 ## Linux VM Setup
 
-Identify Interfaces
+1. Identify Interfaces
 
 ip link
 ip addr
