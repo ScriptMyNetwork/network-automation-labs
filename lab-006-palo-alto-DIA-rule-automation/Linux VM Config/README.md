@@ -45,11 +45,13 @@ pip3 --version
 5. Create Lab Directories
 
 mkdir -p ~/network-automation-labs/lab006-DIA
+
 cd ~/network-automation-labs/lab006-DIA
 
 6. Create and Activate Python Virtual Environment
 
 python3 -m venv venv
+
 source venv/bin/activate
 
 Upgrade pip:
