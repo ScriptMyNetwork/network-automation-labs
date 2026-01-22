@@ -71,7 +71,9 @@ pip list
 Using WinSCP, copy the following files into:
 
 ~/network-automation-labs/lab006-DIA/
+
 Files:
+
 pa_dia.py
 config.yaml
 
@@ -120,7 +122,9 @@ sudo nano /etc/resolv.conf
 Replace entire contents with:
 
 nameserver 1.1.1.1
+
 nameserver 8.8.8.8
+
 Fix permissions:
 
 sudo chmod 644 /etc/resolv.conf
