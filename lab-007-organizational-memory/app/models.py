@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text, Float, DateTime
 from datetime import datetime
+
 from app.database import Base
 
 
@@ -16,4 +17,8 @@ class Decision(Base):
     source = Column(String)
 
     confidence = Column(Float)
+
+    # NEW FIELD
+    status = Column(String, default="active")
+
     created_at = Column(DateTime, default=datetime.utcnow)
