@@ -5,11 +5,11 @@ from datetime import datetime
 
 from app.database import SessionLocal
 from app.models import Decision
+from app.ai_engine import ask_question
 
 app = FastAPI(title="Organizational Decision Memory API")
 
 
-# ---------- Pydantic Schema (API input model) ----------
 class DecisionCreate(BaseModel):
     decision_id: str
     summary: str
@@ -18,6 +18,10 @@ class DecisionCreate(BaseModel):
     source: Optional[str] = None
     confidence: float = 0.5
     status: str = "active"
+
+
+class QuestionRequest(BaseModel):
+    question: str
 
 
 def decision_to_dict(d):
@@ -31,6 +35,12 @@ def decision_to_dict(d):
         "status": d.status,
         "created_at": d.created_at
     }
+
+
+@app.post("/ask")
+def ask_ai(q: QuestionRequest):
+    answer = ask_question(q.question)
+    return {"answer": answer}
 
 
 @app.get("/")
@@ -47,22 +57,9 @@ def list_decisions():
     return result
 
 
-@app.get("/decisions/{decision_id}")
-def get_decision(decision_id: str):
-    session = SessionLocal()
-    d = session.query(Decision).filter(Decision.decision_id == decision_id).first()
-    session.close()
-
-    if not d:
-        raise HTTPException(status_code=404, detail="Decision not found")
-
-    return decision_to_dict(d)
-
-
 @app.post("/decisions")
 def create_decision(decision: DecisionCreate):
     session = SessionLocal()
-
     existing = session.query(Decision).filter(Decision.decision_id == decision.decision_id).first()
     if existing:
         session.close()
@@ -84,30 +81,3 @@ def create_decision(decision: DecisionCreate):
     session.close()
 
     return {"message": "Decision created successfully"}
-
-
-@app.get("/decisions/risks")
-def decisions_with_risks():
-    session = SessionLocal()
-    decisions = session.query(Decision).filter(Decision.risks != None).all()
-    result = [decision_to_dict(d) for d in decisions]
-    session.close()
-    return result
-
-
-@app.get("/decisions/high-confidence")
-def high_confidence(threshold: float = 0.8):
-    session = SessionLocal()
-    decisions = session.query(Decision).filter(Decision.confidence >= threshold).all()
-    result = [decision_to_dict(d) for d in decisions]
-    session.close()
-    return result
-
-
-@app.get("/decisions/timeline")
-def timeline():
-    session = SessionLocal()
-    decisions = session.query(Decision).order_by(Decision.created_at.asc()).all()
-    result = [decision_to_dict(d) for d in decisions]
-    session.close()
-    return result
