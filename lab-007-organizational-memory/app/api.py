@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
@@ -34,19 +34,14 @@ def decision_to_dict(d):
     return {
         "decision_id": d.decision_id,
         "summary": d.summary,
-        "rationale": d.rationale,
-        "risks": d.risks,
-        "source": d.source,
-        "confidence": d.confidence,
         "status": d.status,
-        "created_at": d.created_at
+        "confidence": d.confidence
     }
 
 
 @app.post("/ask")
 def ask_ai(q: QuestionRequest):
-    answer = ask_question(q.question)
-    return {"answer": answer}
+    return {"answer": ask_question(q.question)}
 
 
 @app.post("/decisions")
@@ -76,3 +71,19 @@ def create_link(link: LinkCreate):
     session.commit()
     session.close()
     return {"message": "Link created"}
+
+
+@app.get("/links")
+def list_links():
+    session = SessionLocal()
+    links = session.query(DecisionLink).all()
+    result = [
+        {
+            "source": l.source_decision_id,
+            "target": l.target_decision_id,
+            "relationship": l.relationship_type
+        }
+        for l in links
+    ]
+    session.close()
+    return result

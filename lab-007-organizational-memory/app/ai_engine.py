@@ -1,17 +1,21 @@
 import os
 from openai import OpenAI
 from app.database import SessionLocal
-from app.models import Decision
+from app.models import Decision, DecisionLink
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 def build_context():
     session = SessionLocal()
+
     decisions = session.query(Decision).all()
+    links = session.query(DecisionLink).all()
+
     session.close()
 
     context_text = "Organizational Decision Memory:\n\n"
+
     for d in decisions:
         context_text += f"""
 Decision ID: {d.decision_id}
@@ -23,6 +27,12 @@ Confidence: {d.confidence}
 Source: {d.source}
 ---
 """
+
+    context_text += "\nDecision Relationships:\n"
+
+    for l in links:
+        context_text += f"{l.source_decision_id} {l.relationship_type} {l.target_decision_id}\n"
+
     return context_text
 
 
@@ -32,13 +42,13 @@ def ask_question(question: str) -> str:
     prompt = f"""
 You are an AI organizational memory assistant.
 
-Use the decisions below to answer questions accurately.
+Use the decisions and relationships below to answer questions accurately.
 
 {context}
 
 Question: {question}
 
-Answer clearly and concisely:
+Explain clearly:
 """
 
     response = client.chat.completions.create(
