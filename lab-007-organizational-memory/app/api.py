@@ -4,7 +4,7 @@ from typing import Optional
 from datetime import datetime
 
 from app.database import SessionLocal
-from app.models import Decision
+from app.models import Decision, DecisionLink
 from app.ai_engine import ask_question
 
 app = FastAPI(title="Organizational Decision Memory API")
@@ -18,6 +18,12 @@ class DecisionCreate(BaseModel):
     source: Optional[str] = None
     confidence: float = 0.5
     status: str = "active"
+
+
+class LinkCreate(BaseModel):
+    source_decision_id: str
+    target_decision_id: str
+    relationship_type: str
 
 
 class QuestionRequest(BaseModel):
@@ -43,9 +49,14 @@ def ask_ai(q: QuestionRequest):
     return {"answer": answer}
 
 
-@app.get("/")
-def root():
-    return {"message": "Decision Memory Engine Running"}
+@app.post("/decisions")
+def create_decision(decision: DecisionCreate):
+    session = SessionLocal()
+    new_decision = Decision(**decision.dict(), created_at=datetime.utcnow())
+    session.add(new_decision)
+    session.commit()
+    session.close()
+    return {"message": "Decision created successfully"}
 
 
 @app.get("/decisions")
@@ -57,27 +68,11 @@ def list_decisions():
     return result
 
 
-@app.post("/decisions")
-def create_decision(decision: DecisionCreate):
+@app.post("/links")
+def create_link(link: LinkCreate):
     session = SessionLocal()
-    existing = session.query(Decision).filter(Decision.decision_id == decision.decision_id).first()
-    if existing:
-        session.close()
-        raise HTTPException(status_code=400, detail="Decision already exists")
-
-    new_decision = Decision(
-        decision_id=decision.decision_id,
-        summary=decision.summary,
-        rationale=decision.rationale,
-        risks=decision.risks,
-        source=decision.source,
-        confidence=decision.confidence,
-        status=decision.status,
-        created_at=datetime.utcnow()
-    )
-
-    session.add(new_decision)
+    new_link = DecisionLink(**link.dict())
+    session.add(new_link)
     session.commit()
     session.close()
-
-    return {"message": "Decision created successfully"}
+    return {"message": "Link created"}
