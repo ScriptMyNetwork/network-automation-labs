@@ -56,12 +56,28 @@ def create_decision(decision: DecisionCreate):
 
 @app.post("/links")
 def create_link(link: LinkCreate):
-    session = SessionLocal()
-    new_link = DecisionLink(**link.dict())
-    session.add(new_link)
-    session.commit()
-    session.close()
-    return {"message": "Link created"}
+    try:
+        session = SessionLocal()
+
+        new_link = DecisionLink(**link.dict())
+        session.add(new_link)
+
+        # Lifecycle automation
+        if link.relationship_type == "replaces":
+            target = session.query(Decision).filter(
+                Decision.decision_id == link.target_decision_id
+            ).first()
+
+            if target:
+                target.status = "deprecated"
+
+        session.commit()
+        session.close()
+
+        return {"message": "Link created and lifecycle updated"}
+
+    except Exception as e:
+        return {"error": str(e)}
 
 
 @app.get("/links")
@@ -76,3 +92,39 @@ def list_links():
     ]
     session.close()
     return result
+
+
+@app.get("/timeline")
+def timeline():
+    session = SessionLocal()
+    decisions = session.query(Decision).order_by(Decision.created_at.asc()).all()
+    result = [
+        {
+            "decision_id": d.decision_id,
+            "summary": d.summary,
+            "status": d.status,
+            "created_at": d.created_at
+        }
+        for d in decisions
+    ]
+    session.close()
+    return result
+
+
+@app.get("/system-overview")
+def overview():
+    session = SessionLocal()
+
+    total = session.query(Decision).count()
+    active = session.query(Decision).filter(Decision.status == "active").count()
+    deprecated = session.query(Decision).filter(Decision.status == "deprecated").count()
+    links = session.query(DecisionLink).count()
+
+    session.close()
+
+    return {
+        "total_decisions": total,
+        "active_decisions": active,
+        "deprecated_decisions": deprecated,
+        "relationship_links": links
+    }
