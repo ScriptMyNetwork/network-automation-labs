@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
@@ -8,6 +9,7 @@ from app.models import Decision, DecisionLink
 from app.ai_engine import ask_question, impact_analysis
 
 app = FastAPI(title="Organizational Decision Memory API")
+templates = Jinja2Templates(directory="templates")
 
 
 class DecisionCreate(BaseModel):
@@ -34,6 +36,11 @@ class ImpactRequest(BaseModel):
     decision_id: str
 
 
+@app.get("/")
+def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+
 @app.post("/ask")
 def ask_ai(q: QuestionRequest):
     return {"answer": ask_question(q.question)}
@@ -56,42 +63,20 @@ def create_decision(decision: DecisionCreate):
 
 @app.post("/links")
 def create_link(link: LinkCreate):
-    try:
-        session = SessionLocal()
-
-        new_link = DecisionLink(**link.dict())
-        session.add(new_link)
-
-        # Lifecycle automation
-        if link.relationship_type == "replaces":
-            target = session.query(Decision).filter(
-                Decision.decision_id == link.target_decision_id
-            ).first()
-
-            if target:
-                target.status = "deprecated"
-
-        session.commit()
-        session.close()
-
-        return {"message": "Link created and lifecycle updated"}
-
-    except Exception as e:
-        return {"error": str(e)}
-
-
-@app.get("/links")
-def list_links():
     session = SessionLocal()
-    links = session.query(DecisionLink).all()
-    result = [
-        {"source": l.source_decision_id,
-         "target": l.target_decision_id,
-         "relationship": l.relationship_type}
-        for l in links
-    ]
+    new_link = DecisionLink(**link.dict())
+    session.add(new_link)
+
+    if link.relationship_type == "replaces":
+        target = session.query(Decision).filter(
+            Decision.decision_id == link.target_decision_id
+        ).first()
+        if target:
+            target.status = "deprecated"
+
+    session.commit()
     session.close()
-    return result
+    return {"message": "Link created and lifecycle updated"}
 
 
 @app.get("/timeline")
@@ -114,12 +99,10 @@ def timeline():
 @app.get("/system-overview")
 def overview():
     session = SessionLocal()
-
     total = session.query(Decision).count()
     active = session.query(Decision).filter(Decision.status == "active").count()
     deprecated = session.query(Decision).filter(Decision.status == "deprecated").count()
     links = session.query(DecisionLink).count()
-
     session.close()
 
     return {
