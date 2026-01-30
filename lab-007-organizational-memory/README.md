@@ -94,9 +94,13 @@ This demonstrates how the platform supports **architecture reasoning and change 
 ## Running the System
 
 ```bash
+
 uvicorn app.api:app --reload
-Open the interface:
+
+# Open the interface:
 
 http://127.0.0.1:8000
-Project Context
+
+# Project Context
+
 This lab is part of ScriptMyNetwork and represents an evolution from network automation into AI-assisted decision governance and change intelligence.
