@@ -101,6 +101,34 @@ uvicorn app.api:app --reload
 
 http://127.0.0.1:8000
 
+```
+
 # Project Context
 
 This lab is part of ScriptMyNetwork and represents an evolution from network automation into AI-assisted decision governance and change intelligence.
+
+## EVE-NG Impact Demonstration
+
+This scenario shows how an operational workaround decision can introduce architectural risk.
+
+**Scenario**
+
+- Dual ISP topology between sites  
+- Primary link failure simulated  
+- Static route added to restore traffic  
+
+**Outcome**
+
+The AI system explains how this tactical decision depends on the architecture and introduces risks such as routing asymmetry and troubleshooting complexity.
+
+### Evidence
+
+| Stage | Screenshot |
+|------|------------|
+| Primary path | ![](docs/lab13-primary-path.png) |
+| Failover | ![](docs/lab13-failover-path.png) |
+| Static workaround | ![](docs/lab13-static-route.png) |
+| AI impact reasoning | ![](docs/lab13-ai-impact.png) |
+
+
+
