@@ -1,0 +1,16 @@
+[
+  {
+    "ticket_id": "CHG-2001",
+    "type": "change",
+    "title": "Add static route on Site-A edge router",
+    "description": "Primary ISP link unstable. Static route added temporarily for reverse traffic.",
+    "risk": "Routing asymmetry and blackholing if not removed"
+  },
+  {
+    "ticket_id": "INC-3302",
+    "type": "incident",
+    "title": "Firewall rule ANY-ANY enabled",
+    "description": "Temporary rule added to troubleshoot application outage.",
+    "risk": "Security exposure and lateral movement risk"
+  }
+]
