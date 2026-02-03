@@ -2,86 +2,116 @@
 
 ## Overview
 
-LAB-007 implements an **AI-powered Organizational Decision Memory and Change Risk Intelligence system**.
+LAB-007 demonstrates an **AI-powered Organizational Decision Memory and Change Risk Intelligence platform** designed for IT and Network environments.
 
-The platform captures infrastructure and operational decisions, understands how they relate, and uses AI to explain reasoning and predict the impact of change.
+The system captures **architectural and operational decisions**, models their **relationships and dependencies**, and applies AI-driven reasoning to explain **why decisions were made** and **what risks emerge when changes occur**.
 
-This project demonstrates how AI can function as **organizational memory** and support **risk-aware change management** for IT and Network teams.
+This represents a shift from traditional network automation toward **decision-aware infrastructure intelligence**.
+
+> **Note:** The core intelligence engine and backend implementation have been moved to a private repository as part of productization. This public lab showcases architecture, concepts, validation scenarios, and system capabilities.
 
 ---
 
 ## The Problem
 
-In most environments:
+Modern infrastructure environments suffer from **decision entropy**:
 
-- Teams forget why decisions were made
-- Knowledge lives in tickets, emails, or people
-- Architecture evolves without clear traceability
-- Changes introduce hidden risks
+- Historical decisions are undocumented or fragmented  
+- Knowledge resides in tickets, emails, or individuals  
+- Architectural intent is lost over time  
+- Operational workarounds accumulate hidden risk  
 
-When incidents occur, teams ask:
+During incidents or change planning, teams frequently ask:
 
-> “Why was this done?”  
-> “What else depends on this?”  
-> “What breaks if we change it?”
+- *Why was this implemented?*  
+- *What depends on this?*  
+- *What could break if we modify it?*
+
+Traditional tools manage configurations — **not decision logic**.
 
 ---
 
 ## The Solution
 
-This system acts as a **decision intelligence platform**:
+This platform introduces **Decision Intelligence for Infrastructure**.
+
+It functions as:
+
+- **Organizational memory** for technical decisions  
+- A **decision relationship graph** linking architecture and operations  
+- An **AI reasoning layer** that explains dependencies and impact  
+- A **change risk awareness system** for safer evolution of environments  
+
+Instead of storing only *what exists*, the system stores **why it exists**.
 
 ---
 
-## Example Scenario (EVE-NG Lab)
+## Example Scenario (EVE-NG Validation Lab)
 
-A dual-ISP topology is used between sites in a lab environment.
+A dual-ISP topology is deployed in a lab environment to simulate real enterprise WAN design.
 
-A static route workaround is added during a failover issue.
+During a failover incident, a static route workaround is introduced to restore traffic.
 
-The system stores:
+The system records:
 
-- The architectural design decision
-- The operational workaround decision
-- The dependency relationship between them
+| Decision Type | Description |
+|--------------|-------------|
+| Architectural Decision | Dual-ISP design and routing model |
+| Operational Decision | Static route workaround during outage |
+| Relationship | Workaround depends on and alters design intent |
 
-The AI can then explain:
+The AI layer can then:
 
-- Why the workaround was needed
-- Risks such as routing asymmetry and blackholing
-- What might be impacted if the design changes
+- Explain **why** the workaround was introduced  
+- Identify risks such as routing asymmetry and blackholing  
+- Show how the workaround increases future troubleshooting complexity  
+- Evaluate impact if the base architecture changes  
 
-This demonstrates how the platform supports **architecture reasoning and change risk awareness**.
+This demonstrates **architecture reasoning**, not just configuration automation.
 
 ---
 
 ## Use Cases
 
-- IT & Network change governance  
+- Change governance and CAB decision support  
 - Post-incident knowledge retention  
 - Architecture decision traceability  
 - Risk-aware change planning  
 - Operational memory for complex environments  
+- Cross-team knowledge continuity  
 
 ---
 
-# Project Context
+## Project Context
 
-This lab is part of ScriptMyNetwork and represents an evolution from network automation into AI-assisted decision governance and change intelligence.
+LAB-007 is part of the ScriptMyNetwork journey, representing an evolution from:
+
+**Network Automation → Decision Intelligence → Change Risk Awareness**
+
+It validates how AI can operate as a **technical reasoning layer** over infrastructure decisions.
+
+---
 
 ## EVE-NG Impact Demonstration
 
-This scenario shows how an operational workaround decision can introduce architectural risk.
+This lab scenario illustrates how an operational workaround can introduce architectural risk.
 
-**Scenario**
+### Scenario
 
 - Dual ISP topology between sites  
 - Primary link failure simulated  
 - Static route added to restore traffic  
 
-**Outcome**
+### Outcome
 
-The AI system explains how this tactical decision depends on the architecture and introduces risks such as routing asymmetry and troubleshooting complexity.
+The AI system identifies that this tactical decision:
+
+- Alters original routing intent  
+- Introduces asymmetric traffic paths  
+- Increases failure-domain complexity  
+- Raises future troubleshooting and outage risk  
+
+---
 
 ### Evidence
 
