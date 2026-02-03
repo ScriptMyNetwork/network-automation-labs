@@ -31,32 +31,6 @@ When incidents occur, teams ask:
 
 This system acts as a **decision intelligence platform**:
 
-### Core Capabilities
-
-- Structured storage of infrastructure decisions  
-- Decision relationship graph (knowledge graph)  
-- AI explanation of decision reasoning  
-- Change impact and risk analysis  
-- Lifecycle tracking (active vs deprecated decisions)  
-- Chat-style interface for user interaction  
-
----
-
-## Architecture
-
-Users / Tickets / Architects
-↓
-Decision Ingestion Layer
-↓
-Structured Decision Database
-↓
-Decision Relationship Graph
-↓
-AI Reasoning & Impact Engine
-↓
-Web UI / API Interface
-
-
 ---
 
 ## Example Scenario (EVE-NG Lab)
@@ -91,18 +65,6 @@ This demonstrates how the platform supports **architecture reasoning and change 
 
 ---
 
-## Running the System
-
-```bash
-
-uvicorn app.api:app --reload
-
-# Open the interface:
-
-http://127.0.0.1:8000
-
-```
-
 # Project Context
 
 This lab is part of ScriptMyNetwork and represents an evolution from network automation into AI-assisted decision governance and change intelligence.
@@ -129,6 +91,3 @@ The AI system explains how this tactical decision depends on the architecture an
 | Failover | ![](docs/lab13-failover-path.png) |
 | Static workaround | ![](docs/lab13-static-route.png) |
 | AI impact reasoning | ![](docs/lab13-ai-impact.png) |
-
-
-
