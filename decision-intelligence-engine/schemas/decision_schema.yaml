@@ -1,0 +1,35 @@
+# Decision Schema v1
+decision_id: "DEC-001"
+title: "Use Netmiko over NAPALM for initial automation labs"
+status: "approved"   # proposed | approved | rejected | deprecated
+decision_date: "2026-01-20T10:30:00Z"
+owner: "ScriptMyNetwork Core"
+context: >
+  Needed a Python automation library for Cisco devices.
+  NAPALM was considered but Netmiko was chosen due to flexibility.
+decision: >
+  Netmiko will be used as the primary SSH automation library for Labs 001–005.
+alternatives_considered:
+  - NAPALM
+  - Paramiko direct
+  - Ansible
+consequences:
+  positive:
+    - Faster scripting
+    - Better device CLI control
+  negative:
+    - Less abstraction compared to NAPALM
+scope:
+  systems:
+    - Cisco IOS routers
+    - Cisco IOS-XE switches
+  teams:
+    - ScriptMyNetwork engineering
+reversibility: "medium"   # easy | medium | hard
+confidence: "high"        # low | medium | high
+references:
+  - "https://github.com/ktbyers/netmiko"
+tags:
+  - python
+  - automation
+  - network
